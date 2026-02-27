@@ -230,10 +230,6 @@ void game(void)
 static bool quiet=false;
 static uint16_t sound_rate,sound_length;
 
-#if defined(_SDL)
-#include "sdl_vid.h"
-#endif
-
 void maininit(void)
 {
   static int maininited = 0;
@@ -871,97 +867,3 @@ int16_t randno(int16_t n)
   return (int16_t)((dgstate.randv&0x7fffffffl)%n);
 }
 
-#ifndef _RP2350
-int dx_sound_volume;
-bool g_bWindowed,use_640x480_fullscreen,use_async_screen_updates;
-
-static void inir(void)
-{
-  char kbuf[80],vbuf[80];
-  int i,j,p;
-  bool cgaflag;
-
-#if defined(UNIX) || defined(DIGGER_DEBUG)
-  digger_log = stderr;
-#else
-  digger_log = fopen("DIGGER.log", "w+");
-#endif
-
-  for (i=0;i<NKEYS;i++) {
-    sprintf(kbuf,"%s%c",keynames[i],(i>=5 && i<10) ? '2' : 0);
-    sprintf(vbuf,"%i/%i/%i/%i/%i",keycodes[i][0],keycodes[i][1],
-            keycodes[i][2],keycodes[i][3],keycodes[i][4]);
-    GetINIString(INI_KEY_SETTINGS,kbuf,vbuf,vbuf,80,ININAME);
-    krdf[i]=true;
-    p=0;
-    for (j=0;j<5;j++) {
-      keycodes[i][j]=atoi(vbuf+p);
-      while (vbuf[p]!='/' && vbuf[p]!=0)
-        p++;
-      if (vbuf[p]==0)
-        break;
-      p++;
-    }
-  }
-  dgstate.gtime=(int)GetINIInt(INI_GAME_SETTINGS,"GauntletTime",120,ININAME);
-  if (dgstate.ftime == 0) {
-      dgstate.ftime=GetINIIntDoc(INI_GAME_SETTINGS,"Speed",80000l,ININAME,
-        "number of microseconds in one frame, eq of 12.5Hz");
-  }
-  dgstate.gauntlet=GetINIBool(INI_GAME_SETTINGS,"GauntletMode",false,ININAME);
-  GetINIString(INI_GAME_SETTINGS,"Players","1",vbuf,80,ININAME);
-  strupr(vbuf);
-  if (vbuf[0]=='2' && vbuf[1]=='S') {
-    dgstate.diggers=2;
-    dgstate.nplayers=1;
-  }
-  else {
-    dgstate.diggers=1;
-    dgstate.nplayers=atoi(vbuf);
-    if (dgstate.nplayers<1 || dgstate.nplayers>2)
-      dgstate.nplayers=1;
-  }
-  soundflag=GetINIBool(INI_SOUND_SETTINGS,"SoundOn",true,ININAME);
-  musicflag=GetINIBool(INI_SOUND_SETTINGS,"MusicOn",true,ININAME);
-  sound_rate=(int)GetINIInt(INI_SOUND_SETTINGS,"Rate",44100,ININAME);
-  sound_length=(int)GetINIInt(INI_SOUND_SETTINGS,"BufferSize",DEFAULT_BUFFER,ININAME);
-
-#if !defined(UNIX) && !defined(_SDL)
-  if (sound_device==1) {
-#else
-  if (!quiet) {
-#endif
-    volume=1;
-    setupsound=s1setupsound;
-    killsound=s1killsound;
-    soundoff=s1soundoff;
-    setspkrt2=s1setspkrt2;
-    timer0=s1timer0;
-    timer2=s1timer2;
-    soundinitglob(sound_length,sound_rate);
-  }
-  dx_sound_volume=(int)GetINIInt(INI_SOUND_SETTINGS,"SoundVolume",0,ININAME);
-  g_bWindowed=true;
-  use_640x480_fullscreen=GetINIBool(INI_GRAPHICS_SETTINGS,"640x480",false,
-                                    ININAME);
-  use_async_screen_updates=GetINIBool(INI_GRAPHICS_SETTINGS,"Async",true,
-                                      ININAME);
-  cgaflag=GetINIBool(INI_GRAPHICS_SETTINGS,"CGA",false,ININAME);
-  if (cgaflag) {
-    ddap->ginit=cgainit;
-    ddap->gpal=cgapal;
-    ddap->ginten=cgainten;
-    ddap->gclear=cgaclear;
-    ddap->ggetpix=cgagetpix;
-    ddap->gputi=cgaputi;
-    ddap->ggeti=cgageti;
-    ddap->gputim=cgaputim;
-    ddap->gwrite=cgawrite;
-    ddap->gtitle=cgatitle;
-    ddap->ginit();
-    ddap->gpal(0);
-  }
-  dgstate.unlimlives=GetINIBool(INI_GAME_SETTINGS,"UnlimitedLives",false,ININAME);
-  dgstate.startlev=(int)GetINIInt(INI_GAME_SETTINGS,"StartLevel",1,ININAME);
-}
-#endif /* !_RP2350 - end of inir guard */

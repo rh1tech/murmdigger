@@ -9,13 +9,7 @@
 #include "record.h"
 #include "digger.h"
 #include "game.h"
-#ifdef _SDL
-#include "sdl_kbd.h"
-#elif defined(_VGL)
-#include "fbsd_kbd.h"
-#elif defined(_RP2350)
 #include "rp2350_kbd.h"
-#endif
 
 /* global variables first */
 bool escape=false,firepflag=false,fire2pflag=false,pausef=false,mode_change=false;

@@ -9,18 +9,7 @@
 #include "digger.h"
 #include "input.h"
 
-#if defined _SDL || defined _SDL_SOUND
-#include <SDL.h>
-#include "sdl_snd.h"
-#endif
-
-#if defined _VGL && !defined _SDL_SOUND
-#include "fbsd_snd.h"
-#endif
-
-#if defined _RP2350
 extern bool wave_device_available;
-#endif
 
 static int16_t wavetype=0,musvol=0;
 static uint16_t t2val=0,t0val=0;
@@ -159,13 +148,9 @@ void soundlevdone(void)
   nljnoteduration=20;
   soundlevdoneflag=soundpausedflag=true;
   while (soundlevdoneflag && !escape) {
-#if defined _SDL || defined _VGL || defined _RP2350
-	if (!wave_device_available)
-		soundlevdoneflag=false;
-#endif
-#if defined _SDL || defined _SDL_SOUND || defined _RP2350
-    gethrt(true);	/* Let some CPU time go away */
-#endif
+    if (!wave_device_available)
+      soundlevdoneflag=false;
+    gethrt(true);
     if (timerclock==timer)
       continue;
     checkkeyb();
@@ -664,10 +649,8 @@ void music(int16_t tune, double dfac)
   musicplaying=true;
   if (tune==2) {
     soundddieoff();
-#if defined _SDL || defined _VGL || defined _RP2350
     if (!wave_device_available)
       return;
-#endif
     sounddiedone = false;
   }
 }
@@ -801,17 +784,13 @@ static void musicupdate(void)
 void soundpause(void)
 {
   soundpausedflag=true;
-#if defined _SDL || defined _SDL_SOUND || defined _RP2350
   pausesounddevice(true);
-#endif
 }
 
 void soundpauseoff(void)
 {
   soundpausedflag=false;
-#if defined _SDL || defined _SDL_SOUND || defined _RP2350
   pausesounddevice(false);
-#endif
 }
 
 static void sett0(bool mode)

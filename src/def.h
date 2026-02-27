@@ -103,18 +103,8 @@
 #endif
 #endif
 
-#if defined(_RP2350)
-/* RP2350: string functions provided by rp2350_main.c */
 #define stricmp(x, y) strcasecmp(x, y)
 #define strnicmp(x, y, z) strncasecmp(x, y, z)
-#elif defined(__FreeBSD__) || defined(__linux__) || defined(__APPLE__)
-#include "fbsd_sup.h"
-#endif
-
-#if defined(UNIX) && !defined(_RP2350)
-#define stricmp(x, y) strcasecmp(x, y)
-#define strnicmp(x, y, z) strncasecmp(x, y, z)
-#endif
 
 #define DIGGER_VERSION "MS MPL 20190212"
 
