@@ -396,8 +396,15 @@ int mainprog(void)
       savedrf=false;
       continue;
     }
+#ifdef _RP2350
+    if (escape) {
+      escape=false;
+      continue;  /* No OS to quit to - return to title screen */
+    }
+#else
     if (escape)
       break;
+#endif
     recinit();
     game();
     gotgame=true;
@@ -407,7 +414,11 @@ int mainprog(void)
     }
     savedrf=false;
     escape=false;
+#ifdef _RP2350
+  } while (1);  /* Never exit on RP2350 */
+#else
   } while (!escape);
+#endif
   finish();
   return 0;
 }

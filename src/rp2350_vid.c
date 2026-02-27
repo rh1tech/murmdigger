@@ -197,26 +197,30 @@ void cgaputim(int16_t x, int16_t y, int16_t ch, int16_t w, int16_t h) {
 }
 
 /*
- * rp2350_getpix - Read pixel from framebuffer
+ * rp2350_getpix - Read pixel collision data from framebuffer
  *
- * Returns bitmask compatible with the original CGA getpix:
- * Checks a 4x2 pixel block and returns which pixels are non-zero.
+ * Returns CGA-format byte: 4 pixels at 2 bits each, MSB first.
+ *   bits 7-6: color of pixel at (x, y)
+ *   bits 5-4: color of pixel at (x+1, y)
+ *   bits 3-2: color of pixel at (x+2, y)
+ *   bits 1-0: color of pixel at (x+3, y)
+ *
+ * Single row only (matching original CGA video memory read).
+ * Callers use bit masks to check specific pixel positions:
+ *   0xc0 = leftmost pixel (x), 0x03 = rightmost pixel (x+3)
  */
 int16_t cgagetpix(int16_t x, int16_t y) {
     int16_t rval = 0;
 
-    if (x > 319 || y > 199)
+    if (x < 0 || x > 319 || y < 0 || y > 199)
         return 0xff;
 
-    /* Check 8x2 pixel area (matching VGA getpix behavior) */
-    for (int yi = 0; yi < 2; yi++) {
-        for (int xi = 0; xi < 8; xi++) {
-            if (fb_get_pixel(x + xi, y + yi))
-                rval |= 0x80 >> xi;
-        }
+    for (int xi = 0; xi < 4; xi++) {
+        uint8_t pix = fb_get_pixel(x + xi, y) & 0x03;
+        rval |= pix << (6 - xi * 2);
     }
 
-    return rval & 0xee;
+    return rval;
 }
 
 /*
@@ -253,15 +257,40 @@ void cgawrite(int16_t x, int16_t y, int16_t ch, int16_t c) {
 /*
  * rp2350_title - Draw title screen
  *
- * The VGA title decompresses to 256KB (640x400x1bpp), which is too large for
- * RP2350's 512KB RAM. Like the original CGA stub in sdl_vid.c, we skip the
- * title image. The title screen text ("D I G G E R"), high scores, and
- * character animations are all drawn separately via outtext()/drawspr().
+ * Draws CGA-style red border and copyright text.
+ * The game's mainprog() draws "D I G G E R", high scores,
+ * and character animations on top.
  */
 void cgatitle(void) {
-    /* Title image skipped - just clear screen.
-     * The game's mainprog() draws text and animations on top. */
+    int x, y, t;
+
     cgaclear();
+
+    /* Draw red border (color 2) with vertical divider.
+     * 3 pixels thick, matching original CGA title screen. */
+    #define BRD_L   4    /* left outer edge */
+    #define BRD_R   317  /* right outer edge (past erasetext reach at x=314) */
+    #define BRD_T   16   /* top outer edge */
+    #define BRD_B   185  /* bottom outer edge */
+    #define BRD_W   3    /* thickness */
+    #define BRD_DIV 160  /* vertical divider x center */
+
+    /* Top and bottom horizontal bars */
+    for (x = BRD_L; x <= BRD_R; x++)
+        for (t = 0; t < BRD_W; t++) {
+            fb_set_pixel(x, BRD_T + t, 2);
+            fb_set_pixel(x, BRD_B - t, 2);
+        }
+    /* Left and right vertical bars */
+    for (y = BRD_T; y <= BRD_B; y++)
+        for (t = 0; t < BRD_W; t++) {
+            fb_set_pixel(BRD_L + t, y, 2);
+            fb_set_pixel(BRD_R - t, y, 2);
+        }
+    /* Vertical divider */
+    for (y = BRD_T; y <= BRD_B; y++)
+        for (t = 0; t < BRD_W; t++)
+            fb_set_pixel(BRD_DIV - 1 + t, y, 2);
 }
 
 /*
