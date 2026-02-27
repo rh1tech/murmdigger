@@ -738,7 +738,7 @@ void graphics_restore_sync_colors(void) {
 
 static uint8_t graphics_buffer[SCREEN_WIDTH * SCREEN_HEIGHT / 2] __aligned(4096) = { 0 };
 
-uint8_t* graphics_get_buffer() {
+uint8_t* __scratch_x("graphics_get_buffer") graphics_get_buffer() {
     return graphics_buffer;
 }
 

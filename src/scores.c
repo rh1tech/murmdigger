@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#ifdef _RP2350
+#include "hardware/flash.h"
+#include "hardware/sync.h"
+#endif
 #include "def.h"
 #include "scores.h"
 #include "main.h"
@@ -73,11 +77,27 @@ int32_t gettscore(int n)
   return scdat[n].tscore + scdat[n].score;
 }
 
+#ifdef _RP2350
+/* Use last 4KB sector of flash for score storage.
+ * PICO_FLASH_SIZE_BYTES = 4MB, FLASH_SECTOR_SIZE = 4KB.
+ * XIP_BASE maps flash to memory-mapped address space. */
+#define SCORES_FLASH_OFFSET (PICO_FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE)
+#define SCORES_FLASH_ADDR   (XIP_BASE + SCORES_FLASH_OFFSET)
+#define SCORES_MAGIC        0x44494753  /* "DIGS" */
+#endif
+
 static void
 readscores(void)
 {
 #ifdef _RP2350
-  scorebuf[0]=0;
+  const uint8_t *flash_data = (const uint8_t *)SCORES_FLASH_ADDR;
+  uint32_t magic;
+  memcpy(&magic, flash_data, sizeof(magic));
+  if (magic == SCORES_MAGIC) {
+    memcpy(scorebuf, flash_data + 4, 512);
+  } else {
+    scorebuf[0] = 0;
+  }
 #else
   FILE *in;
 
@@ -104,7 +124,22 @@ out:
 static void
 writescores(void)
 {
-#ifndef _RP2350
+#ifdef _RP2350
+  /* Write scores to flash. Core 1's code path is entirely in RAM
+   * (__not_in_flash_func + __scratch_x DMA handler), so we only need
+   * to disable Core 0 interrupts - no multicore lockout required.
+   * This keeps HDMI signal uninterrupted during flash writes. */
+  uint8_t buf[FLASH_SECTOR_SIZE];
+  uint32_t magic = SCORES_MAGIC;
+  memset(buf, 0xFF, sizeof(buf));
+  memcpy(buf, &magic, sizeof(magic));
+  memcpy(buf + 4, scorebuf, 512);
+
+  uint32_t ints = save_and_disable_interrupts();
+  flash_range_erase(SCORES_FLASH_OFFSET, FLASH_SECTOR_SIZE);
+  flash_range_program(SCORES_FLASH_OFFSET, buf, FLASH_SECTOR_SIZE);
+  restore_interrupts(ints);
+#else
   FILE *out;
   if (!dgstate.levfflag) {
     if ((out=fopen(SFNAME,"wb"))!=NULL) {

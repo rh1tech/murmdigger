@@ -35,12 +35,16 @@ FILE *digger_log = NULL;
  * Initializes HDMI IRQ handler on this core, then loops forever.
  * The HDMI driver runs entirely from DMA interrupts.
  */
-static void core1_main(void) {
+static void __not_in_flash_func(core1_main)(void) {
     graphics_init_irq_on_this_core();
 
     /* Signal Core 0 that HDMI IRQ handler is ready */
     multicore_fifo_push_blocking(1);
 
+    /* Loop forever in RAM. The HDMI DMA IRQ handler (__scratch_x) runs
+     * on this core. Keeping core1_main in RAM ensures Core 1 never
+     * accesses flash, so flash erase/program on Core 0 is safe without
+     * multicore lockout - and HDMI signal stays uninterrupted. */
     while (true) {
         tight_loop_contents();
     }

@@ -94,6 +94,7 @@ target_link_libraries(murmdigger
     hardware_irq
     hardware_resets
     hardware_sync
+    hardware_flash
     ps2kbd
 )
 

@@ -91,7 +91,31 @@ void restorekeyb(void) {
 }
 
 /*
- * getkey - Block until a key is pressed, return HID scancode.
+ * hid_to_ascii - Convert HID keycode to ASCII character.
+ * Returns 0 for unmapped keys.
+ */
+static int16_t hid_to_ascii(int16_t hid) {
+    if (hid >= HID_KEY_A && hid <= HID_KEY_Z)
+        return 'A' + (hid - HID_KEY_A);
+    if (hid >= HID_KEY_1 && hid <= HID_KEY_9)
+        return '1' + (hid - HID_KEY_1);
+    if (hid == HID_KEY_0)
+        return '0';
+    if (hid == HID_KEY_ENTER)
+        return 13;
+    if (hid == HID_KEY_BACKSPACE)
+        return 8;
+    if (hid == HID_KEY_DELETE)
+        return 127;
+    if (hid == HID_KEY_SPACE)
+        return ' ';
+    return 0;
+}
+
+/*
+ * getkey - Block until a key is pressed.
+ * If scancode=true, return raw HID scancode (for game controls).
+ * If scancode=false, return ASCII character (for text input like initials).
  */
 int16_t getkey(bool scancode) {
     int16_t result;
@@ -103,6 +127,9 @@ int16_t getkey(bool scancode) {
     klen--;
     if (klen > 0)
         memmove(kbuffer, kbuffer + 1, klen * sizeof(struct kbent));
+
+    if (!scancode)
+        result = hid_to_ascii(result);
 
     return result;
 }
