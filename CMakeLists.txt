@@ -78,6 +78,9 @@ target_compile_definitions(murmdigger PRIVATE
 # PS/2 keyboard driver (C++ library with PIO programs)
 add_subdirectory(drivers/ps2kbd)
 
+# USB HID keyboard driver (conditional on USB_HID_ENABLED)
+add_subdirectory(drivers/usbhid)
+
 # Generate PIO header for I2S audio
 pico_generate_pio_header(murmdigger
     ${CMAKE_CURRENT_LIST_DIR}/drivers/audio_i2s.pio
@@ -103,6 +106,7 @@ target_link_libraries(murmdigger
     hardware_sync
     hardware_flash
     ps2kbd
+    usbhid
 )
 
 # Use custom linker script
@@ -111,6 +115,12 @@ pico_set_linker_script(murmdigger ${CMAKE_CURRENT_LIST_DIR}/memmap.ld)
 # Generate UF2 and other output formats
 pico_add_extra_outputs(murmdigger)
 
-# Enable USB serial console for debug output
-pico_enable_stdio_usb(murmdigger 1)
-pico_enable_stdio_uart(murmdigger 0)
+# USB HID enabled: native USB port → Host mode, debug → UART
+# USB HID disabled: native USB port → CDC serial, no UART
+if(USB_HID_ENABLED)
+    pico_enable_stdio_usb(murmdigger 0)
+    pico_enable_stdio_uart(murmdigger 1)
+else()
+    pico_enable_stdio_usb(murmdigger 1)
+    pico_enable_stdio_uart(murmdigger 0)
+endif()

@@ -1,6 +1,6 @@
 # MurmDigger
 
-Digger Remastered for RP2350 (Raspberry Pi Pico 2) with HDMI display, PS/2 keyboard, and I2S audio.
+Digger Remastered for RP2350 (Raspberry Pi Pico 2) with HDMI display, PS/2 or USB keyboard, and I2S audio.
 
 ## Screenshots
 
@@ -14,7 +14,7 @@ Digger Remastered for RP2350 (Raspberry Pi Pico 2) with HDMI display, PS/2 keybo
 
 In 1998, Andrew Jenner reverse-engineered the original x86 binary and created [Digger Remastered](http://www.digger.org) — a portable C reimplementation that preserved the original gameplay. Maksym Sobolyev ([sobomax](https://github.com/sobomax/digger)) later extended the project with SDL support, Linux compatibility, and various improvements.
 
-MurmDigger is a bare-metal port of Digger Remastered to the RP2350 microcontroller, using CGA 4-color graphics mode for a minimal flash footprint (~347 KB UF2). It outputs video over HDMI via PIO, reads input from a PS/2 keyboard, and plays audio through an I2S DAC — all without an operating system.
+MurmDigger is a bare-metal port of Digger Remastered to the RP2350 microcontroller, using CGA 4-color graphics mode for a minimal flash footprint (~347 KB UF2). It outputs video over HDMI via PIO, reads input from a PS/2 or USB keyboard, and plays audio through an I2S DAC — all without an operating system.
 
 ## Note on Title Screen
 
@@ -22,7 +22,7 @@ The original CGA implementation in sobomax/digger had `cgatitle()` as a stub —
 
 ## Supported Boards
 
-This firmware is designed for the following RP2350-based boards with integrated HDMI, PS/2 and I2S:
+This firmware is designed for the following RP2350-based boards with integrated HDMI, PS/2, USB, and I2S:
 
 - **[Murmulator](https://murmulator.ru)** — A compact retro-computing platform based on RP Pico / Pico 2, designed for emulators and classic games.
 - **[FRANK](https://rh1.tech/projects/frank?area=about)** — A versatile development board based on RP Pico 2, HDMI output, and extensive I/O options.
@@ -33,7 +33,7 @@ Both boards provide all necessary peripherals out of the box — no additional w
 
 - **Raspberry Pi Pico 2** (RP2350) or compatible board
 - **HDMI connector** (directly connected via resistors, no HDMI encoder needed)
-- **PS/2 keyboard** (directly connected)
+- **PS/2 keyboard** (directly connected) and/or **USB keyboard** (via native USB port)
 - **I2S DAC module** (e.g., TDA1387 or PCM5102)
 
 ## Pin Tables
@@ -69,6 +69,8 @@ Two GPIO layouts are supported: **M1** and **M2**.
 | LRCLK  | 28      | 11      |
 
 ## Controls
+
+Both PS/2 and USB keyboards are supported simultaneously in release builds.
 
 ### Single Player
 
@@ -115,6 +117,16 @@ cd murmdigger
 # Build with custom CPU speed
 ./build.sh -c 378
 ```
+
+### Release Build
+
+Release builds enable USB HID keyboard support and produce UF2 files for both board variants:
+
+```bash
+./release.sh
+```
+
+Output files are placed in the `release/` directory.
 
 ### Flash
 

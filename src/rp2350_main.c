@@ -99,9 +99,8 @@ int main(void) {
     set_sys_clock_khz(CPU_CLOCK_MHZ * 1000, true);
     sleep_ms(10);
 
-    /* USB serial console */
+    /* stdio (USB CDC or UART depending on USB_HID_ENABLED) */
     stdio_init_all();
-    sleep_ms(5000);
     printf("murmdigger: starting\n");
 
     /* Initialize HDMI graphics (Core 0, defer IRQ to Core 1) */

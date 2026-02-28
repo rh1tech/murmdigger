@@ -16,6 +16,7 @@
 #include "input.h"
 #include "ps2kbd/ps2kbd_wrapper.h"
 #include "ps2kbd/hid_codes.h"
+#include "usbhid/usbhid_wrapper.h"
 
 #define KBLEN 30
 
@@ -54,15 +55,23 @@ int keycodes[NKEYS][5] = {
 };
 
 /*
- * Poll PS/2 keyboard and drain events into our buffer.
+ * Poll PS/2 and USB keyboards, drain events into our buffer.
  */
 static void poll_keyboard(void) {
     int pressed;
     unsigned char key;
 
     ps2kbd_tick();
+    usbhid_wrapper_tick();
 
     while (ps2kbd_get_key(&pressed, &key)) {
+        if (pressed && klen < KBLEN) {
+            kbuffer[klen].scancode = key;
+            klen++;
+        }
+    }
+
+    while (usbhid_wrapper_get_key(&pressed, &key)) {
         if (pressed && klen < KBLEN) {
             kbuffer[klen].scancode = key;
             klen++;
@@ -72,10 +81,13 @@ static void poll_keyboard(void) {
 
 /*
  * GetAsyncKeyState - Check if a specific HID key is currently held.
+ * Checks both PS/2 and USB keyboards.
  */
 bool GetAsyncKeyState(int key) {
     ps2kbd_tick();
-    return ps2kbd_is_key_pressed((uint8_t)key);
+    usbhid_wrapper_tick();
+    return ps2kbd_is_key_pressed((uint8_t)key)
+        || usbhid_wrapper_is_key_pressed((uint8_t)key);
 }
 
 /*
@@ -83,6 +95,7 @@ bool GetAsyncKeyState(int key) {
  */
 void initkeyb(void) {
     ps2kbd_init();
+    usbhid_wrapper_init();
     klen = 0;
 }
 
