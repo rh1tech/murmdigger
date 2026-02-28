@@ -1,3 +1,11 @@
+/* memmap.ld - Linker Script
+ *
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 /* Based on GCC ARM embedded samples.
    Defines the following symbols for use by code:
     __exidx_start

@@ -1,3 +1,12 @@
+/*
+ * HDMI.c - PIO HDMI Output Driver
+ *
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #include "../src/board_config.h"
 #include "HDMI.h"
 #include <stdio.h>

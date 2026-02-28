@@ -1,8 +1,10 @@
 /*
- * board_config.h
+ * board_config.h - Board GPIO Configuration
  *
- * Board configuration for murmdigger - Digger Remastered for RP2350
- * Based on murmapple board configuration
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #ifndef BOARD_CONFIG_H
 #define BOARD_CONFIG_H

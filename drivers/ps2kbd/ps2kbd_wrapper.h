@@ -1,3 +1,12 @@
+/*
+ * ps2kbd_wrapper.h - PS/2 Keyboard C Wrapper Header
+ *
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #ifndef PS2KBD_WRAPPER_H
 #define PS2KBD_WRAPPER_H
 

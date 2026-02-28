@@ -1,10 +1,10 @@
 /*
- * rp2350_vid.c - RP2350 HDMI Video Backend for Digger
+ * rp2350_vid.c - RP2350 HDMI Video Backend
  *
- * Renders CGA 4-color graphics to the HDMI 4-bit indexed framebuffer.
- * The HDMI driver provides a 320x240 framebuffer with 4 bits per pixel
- * (nibble-packed, 2 pixels per byte). Digger's 320x200 is rendered
- * with a 20-pixel Y offset for vertical centering.
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include <string.h>

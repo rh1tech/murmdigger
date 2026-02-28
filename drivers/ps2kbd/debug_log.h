@@ -1,3 +1,12 @@
+/*
+ * debug_log.h - Debug Logging Macros
+ *
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 #pragma once
 
 #include <stdio.h>

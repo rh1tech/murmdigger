@@ -1,12 +1,10 @@
 /*
- * murmdigger - I2S Audio Driver with Chained Double Buffer DMA
+ * audio.c - I2S Audio Driver
  *
- * Uses two DMA channels in ping-pong configuration:
- * - Channel A plays buffer 0, then triggers channel B
- * - Channel B plays buffer 1, then triggers channel A
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
  *
- * Stripped from murmgenesis: removed YM2612/SN76489 mixing,
- * kept only low-level I2S functions.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include "audio.h"

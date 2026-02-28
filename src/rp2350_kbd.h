@@ -1,9 +1,10 @@
 /*
- * rp2350_kbd.h - RP2350 PS/2 Keyboard Definitions for Digger
+ * rp2350_kbd.h - RP2350 PS/2 Keyboard Definitions
  *
- * Provides key state macros (leftpressed, rightpressed, etc.)
- * using GetAsyncKeyState() with HID keycodes, matching the
- * interface provided by sdl_kbd.h and fbsd_kbd.h.
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifndef __RP2350_KBD_H

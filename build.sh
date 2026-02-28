@@ -1,5 +1,10 @@
 #!/bin/bash
-# Build murmdigger - Digger Remastered for RP2350
+# build.sh - Build Script
+#
+# Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+# https://rh1.tech
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Usage: ./build.sh [OPTIONS]
 #   -b, --board      Board variant: M1 (default) or M2

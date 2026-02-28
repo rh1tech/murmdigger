@@ -1,6 +1,10 @@
 /*
- * ps2kbd_wrapper.cpp - PS/2 Keyboard wrapper for Digger Remastered
- * Provides raw HID keycode state tracking for GetAsyncKeyState().
+ * ps2kbd_wrapper.cpp - PS/2 Keyboard C Wrapper
+ *
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include "../../src/board_config.h"

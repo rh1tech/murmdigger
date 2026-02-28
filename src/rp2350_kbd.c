@@ -1,8 +1,10 @@
 /*
- * rp2350_kbd.c - RP2350 PS/2 Keyboard Backend for Digger
+ * rp2350_kbd.c - RP2350 PS/2 Keyboard Backend
  *
- * Uses PS/2 keyboard driver with HID keycodes.
- * Maps Digger key functions to HID scancodes.
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include <string.h>

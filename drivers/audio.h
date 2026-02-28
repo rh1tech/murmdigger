@@ -1,8 +1,10 @@
 /*
- * murmdigger - Simple DMA-based I2S Audio Driver for RP2350
- * Based on murmgenesis audio driver
+ * audio.h - I2S Audio Driver Header
  *
- * Stripped down to just I2S core functions for Digger's software sound.
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 #ifndef AUDIO_H
 #define AUDIO_H

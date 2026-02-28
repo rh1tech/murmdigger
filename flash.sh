@@ -1,5 +1,10 @@
 #!/bin/bash
-# Flash murmdigger to connected Pico device
+# flash.sh - Flash Script
+#
+# Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+# https://rh1.tech
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # Default to ELF file from build directory
 FIRMWARE="${1:-./build/murmdigger.elf}"

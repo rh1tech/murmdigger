@@ -1,9 +1,10 @@
 /*
- * rp2350_main.c - RP2350 Entry Point for Digger Remastered
+ * rp2350_main.c - RP2350 Entry Point for Digger
  *
- * Architecture:
- *   Core 0: Game logic + keyboard polling + audio buffer filling
- *   Core 1: HDMI video output (DMA/IRQ driven)
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include <string.h>

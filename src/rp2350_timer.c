@@ -1,8 +1,10 @@
 /*
- * rp2350_timer.c - RP2350 Hardware Timer Backend for Digger
+ * rp2350_timer.c - RP2350 Hardware Timer Backend
  *
- * Uses RP2350's hardware timer (time_us_64()) for frame timing.
- * Replaces SDL_GetTicks() / SDL_Delay() from sdl_timer.c.
+ * Copyright (c) 2026 Mikhail Matveev <xtreme@rh1.tech>
+ * https://rh1.tech
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include <stdint.h>
